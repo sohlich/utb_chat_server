@@ -8,6 +8,30 @@ import (
 	"testing"
 )
 
+func TestAuthProvider(t *testing.T) {
+	provider := NewAuthProvider()
+	result := provider.isAuthenticated("user")
+	if result {
+		t.Errorf("Expected False got %v", result)
+	}
+	result = provider.login("user")
+	if !result {
+		t.Errorf("Expected True got %v", result)
+	}
+	result = provider.isAuthenticated("user")
+	if !result {
+		t.Errorf("Expected True got %v", result)
+	}
+	result = provider.logout("user")
+	if !result {
+		t.Errorf("Expected True got %v", result)
+	}
+	result = provider.isAuthenticated("user")
+	if result {
+		t.Errorf("Expected False got %v", result)
+	}
+}
+
 func TestLoginHandler(t *testing.T) {
 	requestHandler := NewRequestHandler()
 	ts := httptest.NewServer(http.HandlerFunc(requestHandler.LoginUser))
@@ -21,7 +45,7 @@ func TestLoginHandler(t *testing.T) {
 	resString := string(cont)
 	defer res.Body.Close()
 	if resString != "OK" {
-		t.Errorf("Expected OK get %s", res)
+		t.Errorf("Expected OK get %s", resString)
 	}
 }
 
@@ -39,7 +63,7 @@ func TestSendMessageHandler(t *testing.T) {
 	resString := string(cont)
 	defer res.Body.Close()
 	if resString != "OK" {
-		t.Errorf("Expected OK get %s", res)
+		t.Errorf("Expected OK get %s", resString)
 	}
 }
 
@@ -77,6 +101,6 @@ func TestLogoutHandler(t *testing.T) {
 	defer res.Body.Close()
 
 	if resString != "OK" {
-		t.Errorf("Expected OK get %s", res)
+		t.Errorf("Expected OK get %s", resString)
 	}
 }

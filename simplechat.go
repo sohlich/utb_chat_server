@@ -9,22 +9,41 @@ import (
 	"sync"
 )
 
+//Wraps simple message
+//DTO to further handling.
 type Message struct {
-	User    string
-	Message string
+	User    string //username
+	Message string //message
 }
 
+//Interface for sauthentication and
+//authorization provider.
+//Provides simple functionality.
 type Authenticator interface {
+
+	//Tests if user is authenticated.
 	isAuthenticated(user string) bool
+
+	//After this methos is called
+	//the user shoudl be authenticated
 	login(user string) bool
+
+	//Logout the user.
+	//After this ethod is called.
+	//User should not be authenticated.
 	logout(user string) bool
 }
 
+//Simple implemetation
+//of Authenticator.
+//AuthProvider is thread safe.
 type AuthProvider struct {
 	users    map[string]bool
 	userLock *sync.Mutex
 }
 
+//Creates and initialize
+//AuthProvider
 func NewAuthProvider() *AuthProvider {
 	aProv := &AuthProvider{
 		make(map[string]bool),
